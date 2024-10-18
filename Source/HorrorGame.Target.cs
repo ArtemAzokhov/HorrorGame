@@ -9,7 +9,8 @@ public class HorrorGameTarget : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V5;
+        IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 
-		ExtraModuleNames.AddRange( new string[] { "HorrorGame" } );
+        ExtraModuleNames.AddRange( new string[] { "HorrorGame" } );
 	}
 }
