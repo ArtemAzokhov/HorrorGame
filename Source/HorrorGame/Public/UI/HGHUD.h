@@ -4,18 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Framework/HGCoreTypes.h"
 #include "HGHUD.generated.h"
 
 class UHGGameplayWidget;
 class UHGGameOverWidget;
-
-UENUM()
-enum class EUIGameState : uint8
-{
-    GameInProgress = 0,
-    GameOver,
-    GameCompleted
-};
+class UHGPauseWidget;
 
 UCLASS()
 class HORRORGAME_API AHGHUD : public AHUD
@@ -29,6 +23,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "UI")
     TSubclassOf<UHGGameOverWidget> GameOverWidgetClass;
 
+    UPROPERTY(EditDefaultsOnly, Category = "UI")
+    TSubclassOf<UHGPauseWidget> PauseWidgetClass;
+
     virtual void BeginPlay() override;
 
 private:
@@ -39,12 +36,13 @@ private:
     TObjectPtr<UHGGameOverWidget> GameOverWidget;
 
     UPROPERTY()
-    TMap<EUIGameState, TObjectPtr<UUserWidget>> GameWidgets;
+    TObjectPtr<UHGPauseWidget> PauseWidget;
+
+    UPROPERTY()
+    TMap<EHGGameState, TObjectPtr<UUserWidget>> GameWidgets;
 
     UPROPERTY()
     TObjectPtr<UUserWidget> CurrentWidget;
 
-    EUIGameState GameState;
-
-    void SetUIGameState(EUIGameState InGameState);
+    void OnGameStateChanged(EHGGameState State);
 };

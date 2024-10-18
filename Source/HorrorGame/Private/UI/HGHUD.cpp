@@ -3,6 +3,9 @@
 #include "UI/HGHUD.h"
 #include "UI/HGGameplayWidget.h"
 #include "UI/HGGameOverWidget.h"
+#include "UI/HGPauseWidget.h"
+#include "Framework/HGGameMode.h"
+#include "Framework/HGUtils.h"
 
 void AHGHUD::BeginPlay()
 {
@@ -10,11 +13,15 @@ void AHGHUD::BeginPlay()
 
     GameplayWidget = CreateWidget<UHGGameplayWidget>(GetWorld(), GameplayWidgetClass);
     check(GameplayWidget);
-    GameWidgets.Add(EUIGameState::GameInProgress, GameplayWidget);
+    GameWidgets.Add(EHGGameState::GameInProgress, GameplayWidget);
 
     GameOverWidget = CreateWidget<UHGGameOverWidget>(GetWorld(), GameOverWidgetClass);
     check(GameOverWidget);
-    GameWidgets.Add(EUIGameState::GameOver, GameOverWidget);
+    GameWidgets.Add(EHGGameState::GameOver, GameOverWidget);
+
+    PauseWidget = CreateWidget<UHGPauseWidget>(GetWorld(), PauseWidgetClass);
+    check(PauseWidget);
+    GameWidgets.Add(EHGGameState::GamePause, PauseWidget);
 
     for (auto& [UIState, GameWidget] : GameWidgets)
     {
@@ -22,21 +29,29 @@ void AHGHUD::BeginPlay()
         GameWidget->SetVisibility(ESlateVisibility::Collapsed);
     }
 
-    SetUIGameState(EUIGameState::GameInProgress);
+    if (GetWorld())
+    {
+        const auto GameMode = Cast<AHGGameMode>(GetWorld()->GetAuthGameMode());
+        if (GameMode)
+        {
+            GameMode->OnGameStateChanged.AddUObject(this, &ThisClass::OnGameStateChanged);
+        }
+    }
 }
 
-void AHGHUD::SetUIGameState(EUIGameState InGameState)
+void AHGHUD::OnGameStateChanged(EHGGameState State)
 {
     if (CurrentWidget)
     {
         CurrentWidget->SetVisibility(ESlateVisibility::Collapsed);
     }
 
-    if (GameWidgets.Contains(InGameState))
+    if (GameWidgets.Contains(State))
     {
-        CurrentWidget = GameWidgets[InGameState];
+        CurrentWidget = GameWidgets[State];
         CurrentWidget->SetVisibility(ESlateVisibility::Visible);
     }
 
-    GameState = InGameState;
+    bool bShowCursor = State != EHGGameState::GameInProgress;
+    WorldUtils::SetUIInput(GetWorld(), bShowCursor);
 }

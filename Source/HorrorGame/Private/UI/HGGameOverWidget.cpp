@@ -10,6 +10,9 @@ void UHGGameOverWidget::NativeOnInitialized()
 
     check(BackToMenuButton);
     BackToMenuButton->OnClicked.AddDynamic(this, &ThisClass::OnBackToMenu);
+
+    check(AgainButton);
+    AgainButton->OnClicked.AddDynamic(this, &ThisClass::OnAgain);
 }
 
 void UHGGameOverWidget::OnBackToMenu()
@@ -18,4 +21,10 @@ void UHGGameOverWidget::OnBackToMenu()
     {
         UGameplayStatics::OpenLevel(GetWorld(), FName(MenuLevel.GetAssetName()));
     }
+}
+
+void UHGGameOverWidget::OnAgain()
+{
+    const FString CurrentLevelName = UGameplayStatics::GetCurrentLevelName(this);
+    UGameplayStatics::OpenLevel(this, FName(CurrentLevelName));
 }

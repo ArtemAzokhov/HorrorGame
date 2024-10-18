@@ -4,21 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "HGGameOverWidget.generated.h"
+#include "HGPauseWidget.generated.h"
 
 class UButton;
 
 UCLASS()
-class HORRORGAME_API UHGGameOverWidget : public UUserWidget
+class HORRORGAME_API UHGPauseWidget : public UUserWidget
 {
     GENERATED_BODY()
 
 protected:
     UPROPERTY(meta = (BindWidget))
-    TObjectPtr<UButton> BackToMenuButton;
+    TObjectPtr<UButton> ResumeButton;
 
     UPROPERTY(meta = (BindWidget))
-    TObjectPtr<UButton> AgainButton;
+    TObjectPtr<UButton> ResetButton;
+
+    UPROPERTY(meta = (BindWidget))
+    TObjectPtr<UButton> MainMenuButton;
 
     UPROPERTY(EditDefaultsOnly)
     TSoftObjectPtr<UWorld> MenuLevel;
@@ -27,8 +30,11 @@ protected:
 
 private:
     UFUNCTION()
-    void OnBackToMenu();
+    void OnResume();
 
     UFUNCTION()
-    void OnAgain();
+    void OnReset();
+
+    UFUNCTION()
+    void OnMainMenu();
 };
