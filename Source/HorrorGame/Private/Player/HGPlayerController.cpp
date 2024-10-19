@@ -5,6 +5,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "Framework/HGUtils.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogAHGPlayerController, All, All);
+
 void AHGPlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
@@ -13,7 +15,16 @@ void AHGPlayerController::SetupInputComponent()
 
     auto* Input = Cast<UEnhancedInputComponent>(InputComponent);
     check(Input);
-    Input->BindAction(PauseAction, ETriggerEvent::Started, this, &ThisClass::OnPauseGame);
+
+    if(!PauseAction.IsNull())
+    {
+        PauseAction->bTriggerWhenPaused = true;
+        Input->BindAction(PauseAction, ETriggerEvent::Started, this, &ThisClass::OnPauseGame);
+    }
+    else
+    {
+        UE_LOG(LogAHGPlayerController, Error, TEXT("PauseAction isn't set!"));
+    }
 }
 
 void AHGPlayerController::OnPauseGame()

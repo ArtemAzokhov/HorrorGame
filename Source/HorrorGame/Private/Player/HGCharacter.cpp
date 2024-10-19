@@ -5,6 +5,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogAHGCharacter, All, All);
+
 AHGCharacter::AHGCharacter()
 {
     PrimaryActorTick.bCanEverTick = true;
@@ -37,7 +39,14 @@ void AHGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
     auto* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent);
     check(Input);
-    Input->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
+    if(!MoveAction.IsNull())
+    {
+        Input->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
+    }
+    else
+    {
+        UE_LOG(LogAHGCharacter, Error, TEXT("MoveAction isn't set!"));
+    }
 }
 
 void AHGCharacter::Move(const FInputActionValue& InputActionValue)
