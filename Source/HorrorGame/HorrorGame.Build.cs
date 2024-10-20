@@ -8,7 +8,17 @@ public class HorrorGame : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "EnhancedInput" });
+		PublicDependencyModuleNames.AddRange(new string[] 
+		{ 
+			"Core", 
+			"CoreUObject", 
+			"Engine", 
+			"InputCore", 
+			"UMG", 
+			"EnhancedInput",
+			"GameplayTasks",
+            "NavigationSystem" 
+		});
         PublicIncludePaths.AddRange(new string[] { "HorrorGame" });
         PrivateDependencyModuleNames.AddRange(new string[] {  });
 
