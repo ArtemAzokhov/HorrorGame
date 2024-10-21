@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Framework/HGCoreTypes.h"
 #include "HGCharacter.generated.h"
 
 class UInputMappingContext;
 class UInputAction;
+class UHGHealthComponent;
 
 UCLASS()
 class HORRORGAME_API AHGCharacter : public ACharacter
@@ -18,23 +18,27 @@ class HORRORGAME_API AHGCharacter : public ACharacter
 public:
     AHGCharacter();
 
-    FOnDeathSignature OnDeath;
-
 protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UHGHealthComponent* HealthComponent;
+
     UPROPERTY(EditDefaultsOnly, Category = "Input")
     TObjectPtr<UInputMappingContext> CharacterMappingContext;
 
     UPROPERTY(EditDefaultsOnly, Category = "Input")
     TObjectPtr<UInputAction> MoveAction;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Health")
-    float Health{100.0f};
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    TObjectPtr<UInputAction> LookAction;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    UAnimMontage* DeathAnimMontage;
 
     UFUNCTION()
     void Move(const FInputActionValue& InputActionValue);
 
     UFUNCTION()
-    void OnTakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
+    void Look(const FInputActionValue& InputActionValue);
 
     void Death();
 

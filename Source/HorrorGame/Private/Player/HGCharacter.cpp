@@ -4,12 +4,16 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/HGHealthComponent.h"
+#include "Components/CapsuleComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogAHGCharacter, All, All);
 
 AHGCharacter::AHGCharacter()
 {
     PrimaryActorTick.bCanEverTick = true;
+
+    HealthComponent = CreateDefaultSubobject<UHGHealthComponent>("HealthComponent");
 }
 
 void AHGCharacter::BeginPlay()
@@ -25,7 +29,7 @@ void AHGCharacter::BeginPlay()
         }
     }
 
-    OnTakeAnyDamage.AddDynamic(this, &ThisClass::OnTakeDamage);
+    HealthComponent->OnDeath.AddUObject(this, &ThisClass::Death);
 }
 
 void AHGCharacter::Tick(float DeltaTime)
@@ -39,7 +43,7 @@ void AHGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
     auto* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent);
     check(Input);
-    if(!MoveAction.IsNull())
+    if (MoveAction)
     {
         Input->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
     }
@@ -47,29 +51,37 @@ void AHGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
     {
         UE_LOG(LogAHGCharacter, Error, TEXT("MoveAction isn't set!"));
     }
+
+    if (LookAction)
+    {
+        Input->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look);
+    }
+    else
+    {
+        UE_LOG(LogAHGCharacter, Error, TEXT("LookAction isn't set!"));
+    }
 }
 
 void AHGCharacter::Move(const FInputActionValue& InputActionValue)
 {
-    AddMovementInput(FVector::ForwardVector, InputActionValue.Get<FVector2D>().Y);
-    AddMovementInput(FVector::RightVector, InputActionValue.Get<FVector2D>().X);
+    AddMovementInput(GetActorForwardVector(), InputActionValue.Get<FVector2D>().Y);
+    AddMovementInput(GetActorRightVector(), InputActionValue.Get<FVector2D>().X);
 }
 
-void AHGCharacter::OnTakeDamage(
-    AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+void AHGCharacter::Look(const FInputActionValue& InputActionValue)
 {
-    UE_LOG(LogTemp, Display, TEXT("TakeDamage"));
-    Health -= Damage;
-    UE_LOG(LogTemp, Display, TEXT("Health: %f"), Health);
-    if (FMath::IsNearlyZero(Health))
-    {
-        Death();
-    }
+    AddControllerYawInput(InputActionValue.Get<FVector2D>().X);
+    AddControllerPitchInput(-InputActionValue.Get<FVector2D>().Y);
 }
 
 void AHGCharacter::Death()
 {
-    UE_LOG(LogTemp, Display, TEXT("Dead"));
+    UE_LOG(LogAHGCharacter, Display, TEXT("Player %s is dead"), *GetName());
     GetCharacterMovement()->DisableMovement();
-    OnDeath.Broadcast();
+    // PlayAnimMontage(DeathAnimMontage);
+
+    GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+
+    GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    GetMesh()->SetSimulatePhysics(true);
 }

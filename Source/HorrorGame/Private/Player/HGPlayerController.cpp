@@ -16,7 +16,7 @@ void AHGPlayerController::SetupInputComponent()
     auto* Input = Cast<UEnhancedInputComponent>(InputComponent);
     check(Input);
 
-    if(!PauseAction.IsNull())
+    if(PauseAction)
     {
         PauseAction->bTriggerWhenPaused = true;
         Input->BindAction(PauseAction, ETriggerEvent::Started, this, &ThisClass::OnPauseGame);

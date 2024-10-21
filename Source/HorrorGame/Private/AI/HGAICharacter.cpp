@@ -3,6 +3,7 @@
 #include "AI/HGAICharacter.h"
 #include "AI/HGAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 AHGAICharacter::AHGAICharacter()
 {
@@ -22,4 +23,27 @@ AHGAICharacter::AHGAICharacter()
 void AHGAICharacter::BeginPlay()
 {
     Super::BeginPlay();
+}
+
+void AHGAICharacter::StartAttack()
+{
+    
+
+    UGameplayStatics::ApplyRadialDamage(GetWorld(), //
+        DamageAmount,                               //
+        GetActorLocation(),                         //
+        DamageRadius,                               //
+        UDamageType::StaticClass(),                 //
+        {GetOwner()},                               //
+        this,                                       //
+        GetController(),                            //
+        DoFullDamage);
+       
+    auto Dur = PlayAnimMontage(AttackAnimMontage);
+    UE_LOG(LogTemp, Display, TEXT("Attack enemy! %f"), Dur);
+}
+
+void AHGAICharacter::StopAttack()
+{
+    UE_LOG(LogTemp, Display, TEXT(" Stop Attack !"));
 }

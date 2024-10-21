@@ -4,6 +4,7 @@
 #include "Player/HGCharacter.h"
 #include "Player/HGPlayerController.h"
 #include "UI/HGHUD.h"
+#include "Components/HGHealthComponent.h"
 
 AHGGameMode::AHGGameMode()
 {
@@ -18,13 +19,16 @@ void AHGGameMode::StartPlay()
 
     SetGameState(EHGGameState::GameInProgress);
 
-    if(GetWorld())
+    if (GetWorld())
     {
-        if(const auto PlayerController = GetWorld()->GetFirstPlayerController())
+        if (const auto PlayerController = GetWorld()->GetFirstPlayerController())
         {
-            if(auto Character = PlayerController->GetPawn<AHGCharacter>())
+            if (auto Character = PlayerController->GetPawn<AHGCharacter>())
             {
-                Character->OnDeath.AddUObject(this, &ThisClass::GameOver);
+                if (auto HealthComponent = Character->FindComponentByClass<UHGHealthComponent>())
+                {
+                    HealthComponent->OnDeath.AddUObject(this, &ThisClass::GameOver);
+                }
             }
         }
     }

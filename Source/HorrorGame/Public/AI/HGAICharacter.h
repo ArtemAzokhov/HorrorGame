@@ -19,8 +19,21 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
     TObjectPtr<UBehaviorTree> BehsaviorTreeAsset;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    TObjectPtr<UAnimMontage> AttackAnimMontage;
+
+    void StartAttack();
+    void StopAttack();
+
 protected:
+    UPROPERTY(EditDefaultsOnly, Category = "Attack")
+    float DamageRadius = 200.0f;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Attack", meta = (EditCondition = "!DoFullDamage"))
+    float DamageAmount = 50.0f;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Attack")
+    bool DoFullDamage = false;
+
     virtual void BeginPlay() override;
-
-
 };
