@@ -3,7 +3,8 @@
 #include "AI/HGAICharacter.h"
 #include "AI/HGAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Kismet/GameplayStatics.h"
+#include "Components/CapsuleComponent.h"
+#include "BrainComponent.h"
 
 AHGAICharacter::AHGAICharacter()
 {
@@ -25,25 +26,20 @@ void AHGAICharacter::BeginPlay()
     Super::BeginPlay();
 }
 
-void AHGAICharacter::StartAttack()
+void AHGAICharacter::Death()
 {
-    
+    UE_LOG(LogTemp, Display, TEXT("Player %s is dead"), *GetName());
+    GetCharacterMovement()->DisableMovement();
+    // PlayAnimMontage(DeathAnimMontage);
 
-    UGameplayStatics::ApplyRadialDamage(GetWorld(), //
-        DamageAmount,                               //
-        GetActorLocation(),                         //
-        DamageRadius,                               //
-        UDamageType::StaticClass(),                 //
-        {GetOwner()},                               //
-        this,                                       //
-        GetController(),                            //
-        DoFullDamage);
-       
-    auto Dur = PlayAnimMontage(AttackAnimMontage);
-    UE_LOG(LogTemp, Display, TEXT("Attack enemy! %f"), Dur);
-}
+    GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
-void AHGAICharacter::StopAttack()
-{
-    UE_LOG(LogTemp, Display, TEXT(" Stop Attack !"));
+    GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    GetMesh()->SetSimulatePhysics(true);
+
+        const auto HGController = Cast<AAIController>(Controller);
+    if (HGController && HGController->BrainComponent)
+    {
+        HGController->BrainComponent->Cleanup();
+    }
 }

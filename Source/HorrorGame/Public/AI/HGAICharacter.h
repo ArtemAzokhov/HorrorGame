@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "Characters/HGBaseCharacter.h"
 #include "HGAICharacter.generated.h"
 
 class UBehaviorTree;
 
 UCLASS()
-class HORRORGAME_API AHGAICharacter : public ACharacter
+class HORRORGAME_API AHGAICharacter : public AHGBaseCharacter
 {
     GENERATED_BODY()
 
@@ -19,21 +19,7 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
     TObjectPtr<UBehaviorTree> BehsaviorTreeAsset;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Animation")
-    TObjectPtr<UAnimMontage> AttackAnimMontage;
-
-    void StartAttack();
-    void StopAttack();
-
 protected:
-    UPROPERTY(EditDefaultsOnly, Category = "Attack")
-    float DamageRadius = 200.0f;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Attack", meta = (EditCondition = "!DoFullDamage"))
-    float DamageAmount = 50.0f;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Attack")
-    bool DoFullDamage = false;
-
+    virtual void Death() override;
     virtual void BeginPlay() override;
 };

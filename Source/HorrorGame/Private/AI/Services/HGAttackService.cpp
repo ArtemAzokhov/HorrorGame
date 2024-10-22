@@ -3,7 +3,7 @@
 #include "AI/Services/HGAttackService.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "AI/HGAICharacter.h"
+#include "Components/HGWeaponComponent.h"
 
 UHGAttackService::UHGAttackService()
 {
@@ -21,11 +21,11 @@ void UHGAttackService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 
     if (Controller)
     {
-        const auto Pawn = Controller->GetPawn<AHGAICharacter>();
-        if (Pawn)
+        const auto WeaponComponent = Controller->GetPawn()->FindComponentByClass<UHGWeaponComponent>();
+        if (WeaponComponent)
         {
 
-            HasAim ? Pawn->StartAttack() : Pawn->StopAttack();
+            HasAim ? WeaponComponent->StartAttack() : WeaponComponent->StopAttack();
         }
     }
 }

@@ -3,15 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "Characters/HGBaseCharacter.h"
 #include "HGCharacter.generated.h"
 
 class UInputMappingContext;
 class UInputAction;
-class UHGHealthComponent;
 
 UCLASS()
-class HORRORGAME_API AHGCharacter : public ACharacter
+class HORRORGAME_API AHGCharacter : public AHGBaseCharacter
 {
     GENERATED_BODY()
 
@@ -19,9 +18,6 @@ public:
     AHGCharacter();
 
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UHGHealthComponent* HealthComponent;
-
     UPROPERTY(EditDefaultsOnly, Category = "Input")
     TObjectPtr<UInputMappingContext> CharacterMappingContext;
 
@@ -31,8 +27,8 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Input")
     TObjectPtr<UInputAction> LookAction;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Animation")
-    UAnimMontage* DeathAnimMontage;
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    TObjectPtr<UInputAction> AttackAction;
 
     UFUNCTION()
     void Move(const FInputActionValue& InputActionValue);
@@ -40,8 +36,7 @@ protected:
     UFUNCTION()
     void Look(const FInputActionValue& InputActionValue);
 
-    void Death();
-
+    virtual void Death() override;
     virtual void BeginPlay() override;
 
 public:

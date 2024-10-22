@@ -4,16 +4,14 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Components/HGHealthComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/HGWeaponComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogAHGCharacter, All, All);
 
 AHGCharacter::AHGCharacter()
 {
     PrimaryActorTick.bCanEverTick = true;
-
-    HealthComponent = CreateDefaultSubobject<UHGHealthComponent>("HealthComponent");
 }
 
 void AHGCharacter::BeginPlay()
@@ -28,8 +26,6 @@ void AHGCharacter::BeginPlay()
             Subsystem->AddMappingContext(CharacterMappingContext, 0);
         }
     }
-
-    HealthComponent->OnDeath.AddUObject(this, &ThisClass::Death);
 }
 
 void AHGCharacter::Tick(float DeltaTime)
@@ -59,6 +55,15 @@ void AHGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
     else
     {
         UE_LOG(LogAHGCharacter, Error, TEXT("LookAction isn't set!"));
+    }
+
+    if (AttackAction && WeaponComponent)
+    {
+        Input->BindAction(AttackAction, ETriggerEvent::Started, WeaponComponent, &UHGWeaponComponent::StartAttack);
+    }
+    else
+    {
+        UE_LOG(LogAHGCharacter, Error, TEXT("AttackAction isn't set!"));
     }
 }
 
