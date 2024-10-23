@@ -36,11 +36,8 @@ protected:
     UFUNCTION()
     void Look(const FInputActionValue& InputActionValue);
 
-    virtual void Death() override;
     virtual void BeginPlay() override;
 
 public:
-    virtual void Tick(float DeltaTime) override;
-
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };

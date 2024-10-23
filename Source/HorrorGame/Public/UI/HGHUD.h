@@ -10,9 +10,9 @@
 class UHGGameplayWidget;
 class UHGGameOverWidget;
 class UHGPauseWidget;
+class UHGGameCompletedWidget;
 
-UCLASS()
-class HORRORGAME_API AHGHUD : public AHUD
+UCLASS() class HORRORGAME_API AHGHUD : public AHUD
 {
     GENERATED_BODY()
 
@@ -26,6 +26,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "UI")
     TSubclassOf<UHGPauseWidget> PauseWidgetClass;
 
+    UPROPERTY(EditDefaultsOnly, Category = "UI")
+    TSubclassOf<UHGGameCompletedWidget> GameCompletedWidgetClass;
+
     virtual void BeginPlay() override;
 
 private:
@@ -37,6 +40,9 @@ private:
 
     UPROPERTY()
     TObjectPtr<UHGPauseWidget> PauseWidget;
+
+    UPROPERTY()
+    TObjectPtr<UHGGameCompletedWidget> GameCompletedWidget;
 
     UPROPERTY()
     TMap<EHGGameState, TObjectPtr<UUserWidget>> GameWidgets;

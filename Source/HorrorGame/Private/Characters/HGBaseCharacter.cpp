@@ -3,6 +3,10 @@
 #include "Characters/HGBaseCharacter.h"
 #include "Components/HGHealthComponent.h"
 #include "Components/HGWeaponComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogHGBaseCharacter, All, All);
 
 AHGBaseCharacter::AHGBaseCharacter()
 {
@@ -19,9 +23,19 @@ void AHGBaseCharacter::BeginPlay()
     HealthComponent->OnDeath.AddUObject(this, &ThisClass::Death);
 }
 
-void AHGBaseCharacter::Tick(float DeltaTime)
+void AHGBaseCharacter::Death()
 {
-    Super::Tick(DeltaTime);
-}
+    UE_LOG(LogHGBaseCharacter, Display, TEXT("Player %s is dead"), *GetName());
+    GetCharacterMovement()->DisableMovement();
+    if (DeathAnimMontage != nullptr)
+    {
+        PlayAnimMontage(DeathAnimMontage);
+    }
+    else
+    {
+        GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
-void AHGBaseCharacter::Death() {}
+        GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+        GetMesh()->SetSimulatePhysics(true);
+    }
+}

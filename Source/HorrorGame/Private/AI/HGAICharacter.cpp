@@ -21,23 +21,11 @@ AHGAICharacter::AHGAICharacter()
     }
 }
 
-void AHGAICharacter::BeginPlay()
-{
-    Super::BeginPlay();
-}
-
 void AHGAICharacter::Death()
 {
-    UE_LOG(LogTemp, Display, TEXT("Player %s is dead"), *GetName());
-    GetCharacterMovement()->DisableMovement();
-    // PlayAnimMontage(DeathAnimMontage);
+    Super::Death();
 
-    GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-
-    GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-    GetMesh()->SetSimulatePhysics(true);
-
-        const auto HGController = Cast<AAIController>(Controller);
+    const auto HGController = Cast<AAIController>(Controller);
     if (HGController && HGController->BrainComponent)
     {
         HGController->BrainComponent->Cleanup();

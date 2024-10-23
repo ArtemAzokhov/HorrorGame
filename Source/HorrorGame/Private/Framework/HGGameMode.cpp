@@ -5,6 +5,9 @@
 #include "Player/HGPlayerController.h"
 #include "UI/HGHUD.h"
 #include "Components/HGHealthComponent.h"
+#include "World/HGDoor.h"
+#include "Kismet/GameplayStatics.h"
+#include "EngineUtils.h"
 
 AHGGameMode::AHGGameMode()
 {
@@ -32,6 +35,8 @@ void AHGGameMode::StartPlay()
             }
         }
     }
+
+    FindWinDoor();
 }
 
 bool AHGGameMode::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
@@ -67,4 +72,42 @@ void AHGGameMode::SetGameState(EHGGameState State)
 void AHGGameMode::GameOver()
 {
     SetGameState(EHGGameState::GameOver);
+    StopPawns();
+}
+
+void AHGGameMode::GameComplete()
+{
+    SetGameState(EHGGameState::GameCompleted);
+    StopPawns();
+}
+
+void AHGGameMode::FindWinDoor()
+{
+    if (!GetWorld()) return;
+
+    TArray<AActor*> Doors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHGDoor::StaticClass(), Doors);
+    if (Doors.Num() > 0)
+    {
+        for (const auto Door : Doors)
+        {
+            if (Door && Door->ActorHasTag(WinTeg))
+            {
+                const auto WinningDoor = Cast<AHGDoor>(Door);
+                WinningDoor->OnExit.AddUObject(this, &ThisClass::GameComplete);
+            }
+        }
+    }
+}
+
+void AHGGameMode::StopPawns()
+{
+    for (auto Pawn : TActorRange<APawn>(GetWorld()))
+    {
+        if (Pawn)
+        {
+            Pawn->TurnOff();
+            Pawn->DisableInput(nullptr);
+        }
+    }
 }

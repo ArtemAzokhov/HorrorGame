@@ -4,6 +4,7 @@
 #include "UI/HGGameplayWidget.h"
 #include "UI/HGGameOverWidget.h"
 #include "UI/HGPauseWidget.h"
+#include "UI/HGGameCompletedWidget.h"
 #include "Framework/HGGameMode.h"
 #include "Framework/HGUtils.h"
 
@@ -22,6 +23,10 @@ void AHGHUD::BeginPlay()
     PauseWidget = CreateWidget<UHGPauseWidget>(GetWorld(), PauseWidgetClass);
     check(PauseWidget);
     GameWidgets.Add(EHGGameState::GamePause, PauseWidget);
+
+    GameCompletedWidget = CreateWidget<UHGGameCompletedWidget>(GetWorld(), GameCompletedWidgetClass);
+    check(GameCompletedWidget);
+    GameWidgets.Add(EHGGameState::GameCompleted, GameCompletedWidget);
 
     for (auto& [UIState, GameWidget] : GameWidgets)
     {

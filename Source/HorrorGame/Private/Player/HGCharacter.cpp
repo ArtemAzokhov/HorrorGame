@@ -1,10 +1,8 @@
 // Horror Game. All Rights Reserved.
 
 #include "Player/HGCharacter.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Components/CapsuleComponent.h"
 #include "Components/HGWeaponComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogAHGCharacter, All, All);
@@ -26,11 +24,6 @@ void AHGCharacter::BeginPlay()
             Subsystem->AddMappingContext(CharacterMappingContext, 0);
         }
     }
-}
-
-void AHGCharacter::Tick(float DeltaTime)
-{
-    Super::Tick(DeltaTime);
 }
 
 void AHGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -77,16 +70,4 @@ void AHGCharacter::Look(const FInputActionValue& InputActionValue)
 {
     AddControllerYawInput(InputActionValue.Get<FVector2D>().X);
     AddControllerPitchInput(-InputActionValue.Get<FVector2D>().Y);
-}
-
-void AHGCharacter::Death()
-{
-    UE_LOG(LogAHGCharacter, Display, TEXT("Player %s is dead"), *GetName());
-    GetCharacterMovement()->DisableMovement();
-    // PlayAnimMontage(DeathAnimMontage);
-
-    GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-
-    GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-    GetMesh()->SetSimulatePhysics(true);
 }
