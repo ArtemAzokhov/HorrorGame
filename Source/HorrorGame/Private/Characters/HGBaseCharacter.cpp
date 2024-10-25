@@ -12,6 +12,9 @@ AHGBaseCharacter::AHGBaseCharacter()
 {
     PrimaryActorTick.bCanEverTick = true;
 
+    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
     HealthComponent = CreateDefaultSubobject<UHGHealthComponent>("HealthComponent");
     WeaponComponent = CreateDefaultSubobject<UHGWeaponComponent>("WeaponComponent");
 }
