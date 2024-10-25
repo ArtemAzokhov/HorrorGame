@@ -26,7 +26,7 @@ protected:
     virtual void NativeOnInitialized() override;
 
 private:
-    UFUNCTION()
+    UFUNCTION(BlueprintCallable)
     void OnStartGame();
 
     UFUNCTION()
