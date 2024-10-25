@@ -25,6 +25,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     TObjectPtr<UAnimMontage> AttackAnimMontage;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    TObjectPtr<USoundBase> ImpactSound;
+
     UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (EditCondition = "!DoFullDamage"))
     float DamageAmount = 50.0f;
 
