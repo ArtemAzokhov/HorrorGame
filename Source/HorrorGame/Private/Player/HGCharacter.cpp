@@ -52,7 +52,7 @@ void AHGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
     if (AttackAction && WeaponComponent)
     {
-        Input->BindAction(AttackAction, ETriggerEvent::Started, WeaponComponent, &UHGWeaponComponent::StartAttack);
+        Input->BindAction(AttackAction, ETriggerEvent::Triggered, WeaponComponent, &UHGWeaponComponent::StartAttack);
     }
     else
     {
