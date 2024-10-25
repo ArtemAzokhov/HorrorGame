@@ -23,6 +23,9 @@ protected:
     UPROPERTY(EditDefaultsOnly)
     TSoftObjectPtr<UWorld> MenuLevel;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    TObjectPtr<USoundBase> GameOverSound;
+
     virtual void NativeOnInitialized() override;
 
 private:
@@ -31,4 +34,7 @@ private:
 
     UFUNCTION()
     void OnAgain();
+
+    UFUNCTION()
+    void OnVisibility(ESlateVisibility InVisibility);
 };

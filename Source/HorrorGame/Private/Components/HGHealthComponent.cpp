@@ -1,6 +1,7 @@
 // Horror Game. All Rights Reserved.
 
 #include "Components/HGHealthComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All);
 
@@ -29,6 +30,7 @@ void UHGHealthComponent::OnTakeDamage(
 {
     UE_LOG(LogHealthComponent, Display, TEXT("TakeDamage: %f"), Damage);
     ApplayDamage(Damage);
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, DamagedActor->GetActorLocation());
 }
 
 void UHGHealthComponent::ApplayDamage(float Damage)

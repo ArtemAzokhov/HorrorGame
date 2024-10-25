@@ -13,6 +13,8 @@ void UHGGameOverWidget::NativeOnInitialized()
 
     check(AgainButton);
     AgainButton->OnClicked.AddDynamic(this, &ThisClass::OnAgain);
+
+    OnVisibilityChanged.AddDynamic(this, &ThisClass::OnVisibility);
 }
 
 void UHGGameOverWidget::OnBackToMenu()
@@ -27,4 +29,12 @@ void UHGGameOverWidget::OnAgain()
 {
     const FString CurrentLevelName = UGameplayStatics::GetCurrentLevelName(this);
     UGameplayStatics::OpenLevel(this, FName(CurrentLevelName));
+}
+
+void UHGGameOverWidget::OnVisibility(ESlateVisibility InVisibility)
+{
+    if (InVisibility == ESlateVisibility::Visible)
+    {
+        PlaySound(GameOverSound);
+    }
 }
