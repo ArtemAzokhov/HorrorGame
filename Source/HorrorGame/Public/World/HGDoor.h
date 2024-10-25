@@ -33,13 +33,19 @@ protected:
     USceneComponent* SceneComponent;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
-    UBoxComponent* TriggerBox;
+    UBoxComponent* EnterTriggerBox;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+    UBoxComponent* ExitTriggerBox;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
     UStaticMeshComponent* DoorMesh;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door Settings")
     bool bCanOpen = true;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bCanOpen", EditConditionHides), Category = "Door Settings")
+    bool bCloseAfterOpened = true;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "360", EditCondition = "bCanOpen", EditConditionHides),
         Category = "Door Settings")
@@ -54,6 +60,8 @@ public:
     virtual void Tick(float DeltaTime) override;
 
 private:
+    AActor* OpenCauser = nullptr;
+
     UFUNCTION()
     void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
         bool bFromSweep, const FHitResult& SweepResult);

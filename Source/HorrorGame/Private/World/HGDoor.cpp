@@ -13,8 +13,11 @@ AHGDoor::AHGDoor()
     SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
     SetRootComponent(SceneComponent);
 
-    TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
-    TriggerBox->SetupAttachment(GetRootComponent());
+    EnterTriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("EnterTriggerBox"));
+    EnterTriggerBox->SetupAttachment(GetRootComponent());
+
+    ExitTriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("ExitTriggerBox"));
+    ExitTriggerBox->SetupAttachment(GetRootComponent());
 
     DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
     DoorMesh->SetupAttachment(GetRootComponent());
@@ -25,8 +28,8 @@ void AHGDoor::BeginPlay()
 {
     Super::BeginPlay();
 
-    TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapBegin);
-    TriggerBox->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnOverlapEnd);
+    EnterTriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapBegin);
+    ExitTriggerBox->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnOverlapEnd);
 }
 
 void AHGDoor::Tick(float DeltaTime)
@@ -41,16 +44,18 @@ void AHGDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* O
     {
         OpenDoor();
         OpenDoor_Implementation();
+        OpenCauser = OtherActor;
     }
 }
 
 void AHGDoor::OnOverlapEnd(
     UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-    if (bCanOpen && OtherActor->IsA(AHGCharacter::StaticClass()))
+    if (bCanOpen && bCloseAfterOpened && OtherActor->IsA(AHGCharacter::StaticClass()) && OpenCauser != nullptr)
     {
         CloseDoor();
         CloseDoor_Implementation();
+        OpenCauser = nullptr;
     }
 }
 
