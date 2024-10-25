@@ -39,9 +39,13 @@ protected:
     UStaticMeshComponent* DoorMesh;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door Settings")
+    bool bCanOpen = true;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "360", EditCondition = "bCanOpen", EditConditionHides),
+        Category = "Door Settings")
     float OpenAngle = 90.0f;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door Settings")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bCanOpen", EditConditionHides), Category = "Door Settings")
     float OpenTime = 1.0f; // in seconds
 
     virtual void BeginPlay() override;

@@ -18,6 +18,7 @@ AHGDoor::AHGDoor()
 
     DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
     DoorMesh->SetupAttachment(GetRootComponent());
+    DoorMesh->SetGenerateOverlapEvents(true);
 }
 
 void AHGDoor::BeginPlay()
@@ -36,7 +37,7 @@ void AHGDoor::Tick(float DeltaTime)
 void AHGDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
     int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (OtherActor->IsA(AHGCharacter::StaticClass()))
+    if (bCanOpen && OtherActor->IsA(AHGCharacter::StaticClass()))
     {
         OpenDoor();
         OpenDoor_Implementation();
@@ -46,8 +47,11 @@ void AHGDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* O
 void AHGDoor::OnOverlapEnd(
     UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-    CloseDoor();
-    CloseDoor_Implementation();
+    if (bCanOpen && OtherActor->IsA(AHGCharacter::StaticClass()))
+    {
+        CloseDoor();
+        CloseDoor_Implementation();
+    }
 }
 
 void AHGDoor::OpenDoor_Implementation()
